@@ -4,7 +4,25 @@ import Button from "react-bootstrap/Button";
 import Link from "next/link";
 
 export default function Login() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {};
+
+    // Placeholder for form validation logic
+    const validateForm = async () => {
+
+        return true;
+    }
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isValid = await validateForm();
+    if (isValid) {
+      // Handle successful login logic here
+      console.log("Form is valid. Proceed with login.");
+    } else {
+      // Handle form errors here
+      console.log("Form is invalid. Show errors.");
+    }
+  };
   return (
     <div className="min-vh-100 d-flex flex-column align-items-center pt-5">
       <div
