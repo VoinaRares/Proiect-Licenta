@@ -3,6 +3,7 @@ package org.example.interactivemapbackend.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 
@@ -10,14 +11,13 @@ import java.util.Objects;
 public class App_User {
     private @Id
     @GeneratedValue Long id;
-
-    public App_User() {
-    }
-
     private String username;
     private String password;
     private String email;
     private boolean active;
+
+    public App_User() {
+    }
 
     public App_User(String username, String password, String email, boolean isActive) {
         this.username = username;

@@ -1,4 +1,4 @@
-package org.example.interactivemapbackend.advice;
+package org.example.interactivemapbackend.exceptions.advice;
 
 import org.example.interactivemapbackend.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;

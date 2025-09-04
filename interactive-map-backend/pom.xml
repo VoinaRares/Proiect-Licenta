@@ -48,7 +48,21 @@
             <artifactId>spring-hateoas</artifactId>
             <version>2.5.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
     </dependencies>
+
 
     <build>
         <plugins>
