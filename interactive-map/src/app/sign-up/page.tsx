@@ -3,36 +3,48 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import Link from "next/link";
+import { CreateUserAPI, emailExists, usernameExists } from "../lib/sign-up-service";
 
 export default function SignUp() {
   const [validated, setValidated] = useState(false);
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  // Simulated API call to check if email exists
   const checkEmailExists = async (email: string): Promise<boolean> => {
-    const existingEmails = [
-      "test@example.com",
-      "user@test.com",
-      "admin@site.com",
-    ];
-    return existingEmails.includes(email.toLowerCase());
+    return emailExists(email);
+  };
+
+  const checkUsernameExists = async (username: string): Promise<boolean> => {
+    return usernameExists(username);
   };
 
   const validateForm = async () => {
     const newErrors = {
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     };
+
+    //Username validation
+    if (!formData.username) {
+      newErrors.username = "Username is required.";
+    } else {
+      const usernameExists = await checkUsernameExists(formData.username);
+      if (usernameExists) {
+        newErrors.username = "This username is already taken.";
+      }
+    }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,10 +95,8 @@ export default function SignUp() {
     const isValid = await validateForm();
     setValidated(true);
 
-    // If form is valid, proceed with submission (e.g., API call)
     if (isValid) {
-      console.log("Form is valid, submitting:", formData);
-      alert("Sign up successful!");
+      CreateUserAPI(formData.email, formData.password, "user");
     }
   };
 
@@ -96,7 +106,6 @@ export default function SignUp() {
       [field]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[field as keyof typeof errors]) {
       setErrors((prev) => ({
         ...prev,
@@ -116,6 +125,20 @@ export default function SignUp() {
           <p className="text-light mb-0">Please sign up to continue</p>
         </div>
         <Form onSubmit={handleSubmit} noValidate validated={validated}>
+          <Form.Group className="mb-3" controlId="formBasicUsername">
+            <Form.Label className="text-white">Username</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter username"
+              value={formData.username}
+              onChange={(e) => handleInputChange("username", e.target.value)}
+              isInvalid={validated && !!errors.username}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.username || "Please provide a valid username."}
+            </Form.Control.Feedback>
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label className="text-white">Email address</Form.Label>
             <Form.Control
@@ -169,9 +192,7 @@ export default function SignUp() {
               </div>
               <div
                 className={`small ${
-                  /[0-9]/.test(formData.password)
-                    ? "text-success"
-                    : "text-fail"
+                  /[0-9]/.test(formData.password) ? "text-success" : "text-fail"
                 } mb-1`}
               >
                 • One number
