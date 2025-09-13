@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: {
+    BACKENDAPI: process.env.BACKENDAPI,
+  }
 };
 
 export default nextConfig;
