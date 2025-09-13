@@ -13,6 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     private final UserService userService;
     private final App_UserModelAssembler userModelAssembler;
@@ -22,22 +23,35 @@ public class UserController {
         this.userModelAssembler = userModelAssembler;
     }
 
+//    @GetMapping("/users")
+//    CollectionModel<EntityModel<App_User>> allUsers() {
+//        List<EntityModel<App_User>> users = userService.getAllUsers()
+//                .stream().map(userModelAssembler::toModel).collect(Collectors.toList());
+//        return CollectionModel.of(users,
+//                linkTo(methodOn(UserController.class).allUsers()).withSelfRel());
+//    }
+
     @GetMapping("/users")
-    CollectionModel<EntityModel<App_User>> allUsers() {
-        List<EntityModel<App_User>> users = userService.getAllUsers()
-                .stream().map(userModelAssembler::toModel).collect(Collectors.toList());
-        return CollectionModel.of(users,
-                linkTo(methodOn(UserController.class).allUsers()).withSelfRel());
+    List<App_User> allUsers() {
+        return userService.getAllUsers();
     }
+
+
+
 
     @PostMapping("/users")
     App_User createUser(@RequestBody App_User user) {
         return userService.createUser(user);
     }
 
+//    @GetMapping("/users/{id}")
+//    EntityModel<App_User> findUser(@PathVariable Long id) {
+//        return userModelAssembler.toModel(userService.getUserById(id));
+//    }
+
     @GetMapping("/users/{id}")
-    EntityModel<App_User> findUser(@PathVariable Long id) {
-        return userModelAssembler.toModel(userService.getUserById(id));
+    App_User findUser(@PathVariable long id) {
+        return userService.getUserById(id);
     }
 
     @PutMapping("/users/{id}")
