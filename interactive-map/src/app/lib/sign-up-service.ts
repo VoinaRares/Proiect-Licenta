@@ -1,48 +1,60 @@
-import { User } from "./model/user";
-
 export async function CreateUserAPI(
   email: string,
   password: string,
   username: string
 ) {
   const backendUrl = process.env.BACKENDAPI;
-  let response = await fetch(backendUrl + "/users", {
+  const res = await fetch(backendUrl + "/auth/sign-up", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: username,
-      email: email,
-      password: password,
+      username,
+      email,
+      password,
       active: true,
     }),
   });
 
-  response = await response.json();
-  return response;
-}
+  if (!res.ok) {
+    throw new Error(`Sign-up failed: ${res.status} ${res.statusText}`);
+  }
 
-async function fetchUsers(): Promise<User[]> {
-   const backendUrl = process.env.BACKENDAPI;
-  const response = await fetch(backendUrl + "/users", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  return response.json();
+  return res.json();
 }
 
 export async function emailExists(email: string): Promise<boolean> {
-  
-  const emails = await fetchUsers()
-    .then((data: User[]) => data.map((user) => user.email));
-  return emails.includes(email);
+  const backendUrl = process.env.BACKENDAPI;
+  const res = await fetch(
+    `${backendUrl}/auth/email-exists?email=${encodeURIComponent(email)}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`Email check failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
 }
 
 export async function usernameExists(username: string): Promise<boolean> {
-  const users = await fetchUsers()
-    .then((data: User[]) => data.map((user) => user.username));
-  return users.includes(username);
+  const backendUrl = process.env.BACKENDAPI;
+  const res = await fetch(
+    `${backendUrl}/auth/username-exists?username=${encodeURIComponent(username)}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`Username check failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
 }

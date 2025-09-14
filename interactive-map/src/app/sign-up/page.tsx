@@ -96,7 +96,7 @@ export default function SignUp() {
     setValidated(true);
 
     if (isValid) {
-      CreateUserAPI(formData.email, formData.password, "user");
+      CreateUserAPI(formData.email, formData.password, formData.username);
     }
   };
 
